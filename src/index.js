@@ -16,7 +16,6 @@ refs.more.classList.add('visually-hidden');
 
 async function searchPhoto(events){
   events.preventDefault()
-  // const objGel = refs.input.value.trim()
   refs.gallery.innerHTML = "";
   searchQuery.page = 1;
 
@@ -33,7 +32,6 @@ async function searchPhoto(events){
           Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
           refs.more.classList.remove('visually-hidden');
-          // console.log(objGel)
         }
     }
     catch(error){
