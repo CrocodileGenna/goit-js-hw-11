@@ -30,7 +30,7 @@ async function searchPhoto(events){
         }else if(obJect.lenght === 0){
           return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }else{
-           Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
+          Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
           refs.more.classList.remove('visually-hidden');
           // console.log(objGel)
