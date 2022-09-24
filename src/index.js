@@ -12,6 +12,7 @@ const refs = {
 }
 
 refs.form.addEventListener('submit', searchPhoto);
+refs.more.classList.add('visually-hidden');
 
 function searchPhoto(events){
   events.preventDefault()
@@ -25,7 +26,8 @@ function searchPhoto(events){
            
         }else{
            Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
-          refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect))
+          refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
+          refs.more.classList.remove('visually-hidden');
           // console.log(objGel)
         }
     })
