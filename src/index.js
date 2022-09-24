@@ -1,70 +1,85 @@
 import './css/styles.css';
-import {fetchCountries} from './fetchCountries'
+import {fetchSearch} from './fetchSearch'
 import Notiflix from 'notiflix';
 
-const DEBOUNCE_DELAY = 300;
-var debounce = require('lodash.debounce');
-// // console.log(fetchCountries("Ukraine"))
 
 const refs = {
     input: document.querySelector("input"),
     button: document.querySelector("button"),
     gallery: document.querySelector(".gallery"),
+    form: document.querySelector(".search-form"),
+    more: document.querySelector(".load-more"),
 }
 
-refs.input.addEventListener('input', debounce(searchCountry, DEBOUNCE_DELAY));
+refs.form.addEventListener('submit', searchPhoto);
 
-function searchCountry(events){
-    const objGel = refs.input.value.trim()
-    fetchCountries(objGel)
+function searchPhoto(events){
+  events.preventDefault()
+  const objGel = refs.input.value.trim()
+  refs.gallery.innerHTML = "";
+  fetchSearch(objGel)
     .then((resp)=>{
-        let obJect = resp.length
-        refs.gallery.innerHTML = "";
-        if(objGel === obJect){
-            refs.gallery.insertAdjacentHTML("beforeend", renderGalery(resp))
+        const obJect = resp.hits
+        if(obJect.lenght === 0 || objGel.length === 0){
+          return Notiflix.Notify.failure("Oops, there is no country with that name");
+           
+        }else{
+           Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
+          refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect))
+          // console.log(objGel)
         }
     })
     .catch((error)=>{
-        console.log(error)
+      Notiflix.Notify.failure("Oops, there is no country with that name");
     })
 }
 
-function ifElse(obJect){
-        if(obJect >= 10){
-            Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
-            refs.countrylist.innerHTML = "";
-            refs.countryinfo.innerHTML = "";
-        }
-    }
-
-function renderGalery(arryCountry){
-    const allGalery = arryCountry.map(({webformatURL, largeImageURL, tags, likes, views, comments, downloads})=>{
-        // console.log(allGalery)
-        
+function renderGalery(arryPhoto){
+    const allGalery = arryPhoto.map((imgEl)=>{
         return `
         <div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" width="100px" height="100px"/>
+        <img src="${imgEl.webformatURL}" alt="${imgEl.tags}" loading="lazy" />
         <div class="info">
           <p class="info-item">
-            <b>Likes: ${likes}</b>
+            <b>Likes: ${imgEl.likes}</b>
           </p>
           <p class="info-item">
-            <b>Views: ${views}</b>
+            <b>Views: ${imgEl.views}</b>
           </p>
           <p class="info-item">
-            <b>Comments: ${comments}</b>
+            <b>Comments: ${imgEl.comments}</b>
           </p>
           <p class="info-item">
-            <b>Downloads: ${downloads}</b>
+            <b>Downloads: ${imgEl.downloads}</b>
           </p>
         </div>
       </div>
         `
-    })
+    }).join("")
     return allGalery
 }
 
+refs.more.addEventListener('click', fnMorePhoto);
 
+function fnMorePhoto(ev) {
+  ev.preventDefault()
+  const objGel = refs.input.value.trim()
+  fetchSearch(objGel)
+    .then((resp)=>{
+        const obJect = resp.hits
+        if(obJect.lenght === 0 || objGel.length === 0){
+          return Notiflix.Notify.failure("Oops, there is no country with that name");
+           
+        }else{
+           Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
+          refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect))
+          // console.log(objGel)
+        }
+    })
+    .catch((error)=>{
+      Notiflix.Notify.failure("Oops, there is no country with that name");
+    })
+}
 
 
 
