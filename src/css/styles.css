@@ -109,6 +109,11 @@ li {
 }
 
 /* more */
+.btn-more{
+  display: flex;
+  justify-content: center;
+}
+
 .load-more{
   display: flex;
   justify-content: center;

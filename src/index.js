@@ -1,5 +1,5 @@
 import './css/styles.css';
-import {fetchSearch} from './fetchSearch'
+import {searchQuery} from './fetchSearch'
 import Notiflix from 'notiflix';
 
 
@@ -14,26 +14,31 @@ const refs = {
 refs.form.addEventListener('submit', searchPhoto);
 refs.more.classList.add('visually-hidden');
 
-function searchPhoto(events){
+async function searchPhoto(events){
   events.preventDefault()
-  const objGel = refs.input.value.trim()
+  // const objGel = refs.input.value.trim()
   refs.gallery.innerHTML = "";
-  fetchSearch(objGel)
-    .then((resp)=>{
-        const obJect = resp.hits
-        if(obJect.lenght === 0 || objGel.length === 0){
-          return Notiflix.Notify.failure("Oops, there is no country with that name");
-           
+  searchQuery.page = 1;
+
+  const query = events.target.elements.searchQuery.value.trim();
+  const response = await searchQuery.fetchSearch(query);
+  const obJect = response.hits;
+ 
+    try {
+        if(!query){
+          return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        }else if(obJect.lenght === 0){
+          return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }else{
-           Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
+           Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
           refs.more.classList.remove('visually-hidden');
           // console.log(objGel)
         }
-    })
-    .catch((error)=>{
-      Notiflix.Notify.failure("Oops, there is no country with that name");
-    })
+    }
+    catch(error){
+      Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+    }
 }
 
 function renderGalery(arryPhoto){
@@ -61,27 +66,40 @@ function renderGalery(arryPhoto){
     return allGalery
 }
 
-refs.more.addEventListener('click', fnMorePhoto);
+refs.more.addEventListener('click', onButtonClick);
 
-function fnMorePhoto(ev) {
-  ev.preventDefault()
-  const objGel = refs.input.value.trim()
-  fetchSearch(objGel)
-    .then((resp)=>{
-        const obJect = resp.hits
-        if(obJect.lenght === 0 || objGel.length === 0){
-          return Notiflix.Notify.failure("Oops, there is no country with that name");
+async function onButtonClick() {
+  searchQuery.page += 1;
+
+  const response = await searchQuery.fetchSearch();
+  if (searchQuery.page > response.totalHits / searchQuery.per_page) {
+      refs.more.classList.add('visually-hidden');
+      Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+  }
+  refs.gallery.insertAdjacentHTML("beforeend", renderGalery(response.hits));
+};
+
+
+// async function fnMorePhoto(ev) {
+//   ev.preventDefault()
+
+//   const objGel = refs.input.value.trim()
+//   fetchSearch(objGel)
+//     .then((resp)=>{
+//         const obJect = resp.hits
+//         if(obJect.lenght === 0 || objGel.length === 0){
+//           return Notiflix.Notify.failure("Oops, there is no country with that name");
            
-        }else{
-           Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
-          refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect))
-          // console.log(objGel)
-        }
-    })
-    .catch((error)=>{
-      Notiflix.Notify.failure("Oops, there is no country with that name");
-    })
-}
+//         }else{
+//            Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
+//           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect))
+//           // console.log(objGel)
+//         }
+//     })
+//     .catch((error)=>{
+//       Notiflix.Notify.failure("Oops, there is no country with that name");
+//     })
+// }
 
 
 
