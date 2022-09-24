@@ -44,7 +44,6 @@ li {
   margin: 0;
 }
 
-
 /* Hed */
 .search-form{
   display: flex;
@@ -81,6 +80,10 @@ li {
   flex-wrap: wrap;
   justify-content: space-around;
   margin-top: 20px;
+}
+.gallery__link {
+  width: 350px;
+  height: 350px;
 }
 .photo-card{
   display: flex;

@@ -1,7 +1,12 @@
 import './css/styles.css';
 import {searchQuery} from './fetchSearch'
 import Notiflix from 'notiflix';
-
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+let lightbox = new SimpleLightbox(".gallery a", {
+  captions: true,
+  CaptionDelay: 250,
+})
 
 const refs = {
     input: document.querySelector("input"),
@@ -32,6 +37,10 @@ async function searchPhoto(events){
           Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
           refs.more.classList.remove('visually-hidden');
+          let lightbox = new SimpleLightbox(".gallery a", {
+            captions: true,
+            CaptionDelay: 250,
+          })
         }
     }
     catch(error){
@@ -42,6 +51,7 @@ async function searchPhoto(events){
 function renderGalery(arryPhoto){
     const allGalery = arryPhoto.map((imgEl)=>{
         return `
+        <a href="${imgEl.largeImageURL}" class="gallery__link">
         <div class="photo-card">
         <img src="${imgEl.webformatURL}" alt="${imgEl.tags}" loading="lazy" />
         <div class="info">
@@ -59,6 +69,7 @@ function renderGalery(arryPhoto){
           </p>
         </div>
       </div>
+      </a>
         `
     }).join("")
     return allGalery
@@ -75,5 +86,6 @@ async function onButtonClick() {
       Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
   }
   refs.gallery.insertAdjacentHTML("beforeend", renderGalery(response.hits));
+  return lightbox.refresh();
 };
 
