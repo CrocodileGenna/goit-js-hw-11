@@ -28,10 +28,12 @@ async function searchPhoto(events){
   const obJect = response.hits;
  
     try {
-        if(!query){
+        if(obJect.lenght === 0){
+          refs.more.classList.add('visually-hidden');
           return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        }else if(obJect.lenght === 0){
-          return Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+        }else if(!query){
+          refs.more.classList.add('visually-hidden');
+          return Notiflix.Notify.info('Please, enter key word for search!');
         }else{
           Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
