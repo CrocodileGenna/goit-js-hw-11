@@ -32,6 +32,10 @@ b {
   padding: 0;
 }
 
+a{
+  text-decoration: none;
+}
+
 button {
   cursor: pointer;
   border: none;

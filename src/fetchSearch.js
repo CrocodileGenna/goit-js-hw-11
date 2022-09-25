@@ -15,7 +15,6 @@ export class searchQuery {
    static async fetchSearch(query = '') {
     if(query.trim()) searchQuery.query = query;
 
-    
    const config = {
         params: {
             key: searchQuery.key,

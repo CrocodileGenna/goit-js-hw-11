@@ -10,7 +10,6 @@ let lightbox = new SimpleLightbox(".gallery a", {
 
 const refs = {
     input: document.querySelector("input"),
-    button: document.querySelector("button"),
     gallery: document.querySelector(".gallery"),
     form: document.querySelector(".search-form"),
     more: document.querySelector(".load-more"),
@@ -36,11 +35,12 @@ async function searchPhoto(events){
         }else{
           Notiflix.Notify.success(`Hooray! We found ${response.totalHits} images.`);
           refs.gallery.insertAdjacentHTML("beforeend", renderGalery(obJect));
-          refs.more.classList.remove('visually-hidden');
-          let lightbox = new SimpleLightbox(".gallery a", {
-            captions: true,
-            CaptionDelay: 250,
-          })
+          if(searchQuery.page > response.totalHits / searchQuery.per_page){
+          refs.more.classList.add('visually-hidden');
+          }else{
+            refs.more.classList.remove('visually-hidden');
+          }
+          return lightbox.refresh();
         }
     }
     catch(error){
